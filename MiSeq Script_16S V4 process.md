@@ -4,6 +4,7 @@ Sequencing data were processed with USEARCH (ver.10.0.240 x64) with UPARSE OTU p
 
 ## Process with USEARCH
 ```
+
 ## Merge paired end reads
 ```
 #decompress the reads
