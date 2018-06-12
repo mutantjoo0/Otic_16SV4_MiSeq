@@ -1,4 +1,4 @@
-# Analysis of ONR 16S V4 MiSeq sequencing data
+# ONR 16S V4 Illumina MiSeq amplicon sequencing analysis
 
 Sequencing data were processed with USEARCH (ver.10.0.240 x64) with UPARSE OTU picking method and subsequent analyses were performed in QIIME (ver.1.8).
 
