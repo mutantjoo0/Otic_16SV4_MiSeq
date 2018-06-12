@@ -1,13 +1,18 @@
-Analysis of ONR 16S V4 MiSeq sequencing data
+# Analysis of ONR 16S V4 MiSeq sequencing data
 
 Sequencing data were processed by USEARCH (v.10.0.240 x64) with UPARSE OTU picking method and subsequent analyses were performed in QIIME (v.1.8).
 
-#join the forward and reverse reads for each sample, write a single file will all saples in it
+## Merge paired end reads
+```
+# join the forward and reverse reads for each sample, write a single file will all saples in it
 ./usearch10.0.240_i86linux64 -fastq_mergepairs *R1*.fastq -relabel @ -fastq_maxdiffs 10 -fastqout fastqmerged/merged.fq -fastq_merge_maxee 1.0 -fastq_minmergelen 200 -fastq_maxmergelen 300
 
 #remove duplicate sequences (to reduce computation time downstream)
 ./usearch10.0.240_i86linux64 -fastx_uniques fastqmerged/merged.fq -fastqout fastqmerged/uniques_combined_merged.fastq -sizeout
+```
 
+## remove singletons
+```
 #remove singletons and reorder data by the length of the sequence
 ./usearch10.0.240_i86linux64 -sortbysize fastqmerged/uniques_combined_merged.fastq -fastqout fastqmerged/nosigs_uniques_combined_merged.fastq -minsize 2
 
