@@ -2,8 +2,7 @@
 
 Sequencing data were processed with USEARCH (ver.10.0.240 x64) with UPARSE OTU picking method and subsequent analyses were performed in QIIME (ver.1.8).
 
-## Process with USEARCH
-```
+# Process with USEARCH
 
 ## Merge paired end reads
 ```
