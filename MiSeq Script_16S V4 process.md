@@ -1,9 +1,16 @@
 # Analysis of ONR 16S V4 MiSeq sequencing data
 
-Sequencing data were processed with USEARCH (v.10.0.240 x64) with UPARSE OTU picking method and subsequent analyses were performed in QIIME (v.1.8).
+Sequencing data were processed with USEARCH (ver.10.0.240 x64) with UPARSE OTU picking method and subsequent analyses were performed in QIIME (ver.1.8).
 
+## Process with USEARCH
+```
 ## Merge paired end reads
 ```
+#decompress the reads
+gunzip *.gz
+
+mddir mergedfastaq
+
 #join the forward and reverse reads for each sample, write a single file will all saples in it
 ./usearch10.0.240_i86linux64 -fastq_mergepairs *R1*.fastq -relabel @ -fastq_maxdiffs 10 -fastqout fastqmerged/merged.fq -fastq_merge_maxee 1.0 -fastq_minmergelen 200 -fastq_maxmergelen 300
 ```
@@ -53,9 +60,8 @@ Sequencing data were processed with USEARCH (v.10.0.240 x64) with UPARSE OTU pic
 ./usearch10.0.240_i86linux64 -usearch_global fastqmerged/merged.fq -db fastqmerged/full_rep_set.fna  -strand plus -id 0.97 -uc OTU_map.uc -otutabout OTU_table.txt -biomout OTU_jsn.bio
 ```
 
-#load QIIME (v.1.8)
-ssh dev-intel14
-module load QIIME/1.8.0
+
+## Analysis with QIIME
 
 #assign taxonomy to OTUs
 assign_taxonomy.py -i fastqmerged/full_rep_set.fna -o taxonomy -r /mnt/home/leejooy5/sequence/SILVA_128_QIIME_release/rep_set/rep_set_16S_only/97/97_otus_16S.fasta -t /mnt/home/leejooy5/sequence/SILVA_128_QIIME_release/taxonomy/16S_only/97/consensus_taxonomy_7_levels.txt
@@ -63,7 +69,7 @@ assign_taxonomy.py -i fastqmerged/full_rep_set.fna -o taxonomy -r /mnt/home/leej
 #add taxonomy to OTU table
 biom add-metadata -i otu_jsn.biom -o otu_table_tax.biom --observation-metadata-fp=taxonomy/full_rep_set_tax_assignments.txt --sc-separated=taxonomy --observation-header=OTUID,taxonomy
 
-#summarize the taxonomy at different levels (e.g. Phylum, Genus)
+#summarize the taxonomy at different levels 
 summarize_taxa.py -i otu_table_tax.biom -o taxa_summary
 
 #align sequences to a database
@@ -75,7 +81,7 @@ filter_alignment.py -i alignment/full_rep_set_aligned.fasta -o filtered_alignmen
 #make a tree
 make_phylogeny.py -i filtered_alignment/full_rep_set_aligned_pfiltered.fasta -o rep_set.tre
 
-#sumarize the OTU table to look at sequenceing depth (min depth=2313)
+#summarize the OTU table to look at sequenceing depth (min depth=2313)
 biom summarize-table -i otu_table_tax.biom -o otu_tablesum.txt
 
 #filter out low sample
