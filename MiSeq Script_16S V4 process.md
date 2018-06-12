@@ -9,7 +9,7 @@ Sequencing data were processed with USEARCH (ver.10.0.240 x64) with UPARSE OTU p
 #decompress the reads
 gunzip *.gz
 
-mddir mergedfastaq
+mkdir mergedfastaq
 
 #join the forward and reverse reads for each sample, write a single file will all saples in it
 ./usearch10.0.240_i86linux64 -fastq_mergepairs *R1*.fastq -relabel @ -fastq_maxdiffs 10 -fastqout fastqmerged/merged.fq -fastq_merge_maxee 1.0 -fastq_minmergelen 200 -fastq_maxmergelen 300
@@ -60,9 +60,8 @@ mddir mergedfastaq
 ./usearch10.0.240_i86linux64 -usearch_global fastqmerged/merged.fq -db fastqmerged/full_rep_set.fna  -strand plus -id 0.97 -uc OTU_map.uc -otutabout OTU_table.txt -biomout OTU_jsn.bio
 ```
 
-
-## Analysis with QIIME
-
+# Analysis with QIIME
+```
 #assign taxonomy to OTUs
 assign_taxonomy.py -i fastqmerged/full_rep_set.fna -o taxonomy -r /mnt/home/leejooy5/sequence/SILVA_128_QIIME_release/rep_set/rep_set_16S_only/97/97_otus_16S.fasta -t /mnt/home/leejooy5/sequence/SILVA_128_QIIME_release/taxonomy/16S_only/97/consensus_taxonomy_7_levels.txt
 
