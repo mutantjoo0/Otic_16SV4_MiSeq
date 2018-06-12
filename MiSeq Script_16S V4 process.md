@@ -1,38 +1,57 @@
 # Analysis of ONR 16S V4 MiSeq sequencing data
 
-Sequencing data were processed by USEARCH (v.10.0.240 x64) with UPARSE OTU picking method and subsequent analyses were performed in QIIME (v.1.8).
+Sequencing data were processed with USEARCH (v.10.0.240 x64) with UPARSE OTU picking method and subsequent analyses were performed in QIIME (v.1.8).
 
 ## Merge paired end reads
 ```
-# join the forward and reverse reads for each sample, write a single file will all saples in it
+#join the forward and reverse reads for each sample, write a single file will all saples in it
 ./usearch10.0.240_i86linux64 -fastq_mergepairs *R1*.fastq -relabel @ -fastq_maxdiffs 10 -fastqout fastqmerged/merged.fq -fastq_merge_maxee 1.0 -fastq_minmergelen 200 -fastq_maxmergelen 300
+```
 
+## Dereplicate
+```
 #remove duplicate sequences (to reduce computation time downstream)
 ./usearch10.0.240_i86linux64 -fastx_uniques fastqmerged/merged.fq -fastqout fastqmerged/uniques_combined_merged.fastq -sizeout
 ```
 
-## remove singletons
+## Remove singletons
 ```
 #remove singletons and reorder data by the length of the sequence
 ./usearch10.0.240_i86linux64 -sortbysize fastqmerged/uniques_combined_merged.fastq -fastqout fastqmerged/nosigs_uniques_combined_merged.fastq -minsize 2
+```
 
+## Precluster 
+```
 #preclust the sequences
 ./usearch10.0.240_i86linux64 -cluster_fast fastqmerged/nosigs_uniques_combined_merged.fastq -centroids_fastq fastqmerged/denoised_nosigs_uniques_combined_merged.fastq -id 0.9 -maxdiffs 5 -abskew 10 -sizein -sizeout -sort size
+```
 
+## Reference-based OTU picking 
+```
 #perform closed-refernce OTU pick against Silva database. Keep all sequences that could not hit the Silva database. 
 ./usearch10.0.240_i86linux64 -usearch_global fastqmerged/denoised_nosigs_uniques_combined_merged.fastq -id 0.97 -db /mnt/home/leejooy5/sequence/SILVA_128_QIIME_release/rep_set/rep_set_16S_only/97/97_otus_16S.fasta -strand plus -uc fastqmerged/ref_seqs.uc -dbmatched fastqmerged/closed_reference.fasta -notmatchedfq fastqmerged/failed_closed.fq
+```
 
+## OTU clustering with chimera filtering
+```
 #reorder seqeuences that faile to hit the Silva database
 ./usearch10.0.240_i86linux64 -sortbysize fastqmerged/failed_closed.fq -fastaout fastqmerged/sorted_failed_closed.fq
 
 #de novo pick and chimera check
 ./usearch10.0.240_i86linux64 -cluster_otus fastqmerged/sorted_failed_closed.fq -minsize 2 -otus fastqmerged/denovo_otus.fasta -relabel OTU_dn_ -uparseout fastqmerged/denovo_out.up
+```
 
+## Combine rep sets between de novo and reference-based OTU picking
+```
 #join the two files that have the sequences for each OTU
  cat fastqmerged/denovo_otus.fasta fastqmerged/closed_reference.fasta > full_rep_set.fna
+```
 
+## Map rep set to pre-dereplicated sequences 
+```
 #map our OTU sequences back to the original dataset to determine the abundance of each OTU in each sample. Write a OTU table (species by sample table)
 ./usearch10.0.240_i86linux64 -usearch_global fastqmerged/merged.fq -db fastqmerged/full_rep_set.fna  -strand plus -id 0.97 -uc OTU_map.uc -otutabout OTU_table.txt -biomout OTU_jsn.bio
+```
 
 #load QIIME (v.1.8)
 ssh dev-intel14
