@@ -85,7 +85,6 @@ biom summarize-table -i otu_table_tax.biom -o otu_tablesum.txt
 
 #filter out low sample
 filter_samples_from_otu_table.py -i otu_table_tax.biom -o otu_table_tax_filt.biom -n 1000
-#dropped this sample GR0011L: 562.0
 
 #rarefy the OTU table (normalized the table to the lowest depth)
 single_rarefaction.py -i otu_table_tax_filt.biom -o single_rare.biom -d 2313
