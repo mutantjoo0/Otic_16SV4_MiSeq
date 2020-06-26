@@ -9,10 +9,10 @@ Sequencing data were processed with USEARCH (ver.10.0.240 x64) with UPARSE OTU p
 #decompress the reads
 gunzip *.gz
 
-#make a output dir, for example
+#make output dir for merged fastq file
 mkdir mergedfastq
 
-#join the forward and reverse reads for each sample, write a single file will all samples in it
+#join the forward and reverse reads for each sample, write a single file (merged.fq) will take all samples in it
 ./usearch10.0.240_i86linux64 -fastq_mergepairs *R1*.fastq -relabel @ -fastq_maxdiffs 10 -fastqout mergedfastq/merged.fq -fastq_merge_maxee 1.0 -fastq_minmergelen 200 -fastq_maxmergelen 300
 ```
 
