@@ -12,7 +12,7 @@ gunzip *.gz
 mkdir mergedfastaq
 
 #join the forward and reverse reads for each sample, write a single file will all saples in it
-./usearch10.0.240_i86linux64 -fastq_mergepairs *R1*.fastq -relabel @ -fastq_maxdiffs 10 -fastqout fastqmerged/merged.fq -fastq_merge_maxee 1.0 -fastq_minmergelen 200 -fastq_maxmergelen 300
+./usearch10.0.240_i86linux64 -fastq_mergepairs *R1*.fastq -relabel @ -fastq_maxdiffs 10 -fastqout mergedfastq/merged.fq -fastq_merge_maxee 1.0 -fastq_minmergelen 200 -fastq_maxmergelen 300
 ```
 
 ## Dereplicate
