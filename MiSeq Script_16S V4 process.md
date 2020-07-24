@@ -36,6 +36,9 @@ mkdir fastqmerged
 
 ## Reference-based OTU picking 
 ```
+#download Silva database (silva 128 qiime release)
+refer-> http://www.metagenomics.wiki/tools/16s/qiime/otu-clustering/silva
+
 #perform closed-refernce OTU pick against Silva database. Keep all sequences that could not hit the Silva database. 
 ./usearch10.0.240_i86linux64 -usearch_global fastqmerged/denoised_nosigs_uniques_combined_merged.fastq -id 0.97 -db /mnt/home/leejooy5/sequence/SILVA_128_QIIME_release/rep_set/rep_set_16S_only/97/97_otus_16S.fasta -strand plus -uc fastqmerged/ref_seqs.uc -dbmatched fastqmerged/closed_reference.fasta -notmatchedfq fastqmerged/failed_closed.fq
 ```
